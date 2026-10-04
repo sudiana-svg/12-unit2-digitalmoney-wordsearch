@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Word Search Digital Money - Kelas XII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0b1b30;--deep:#0f2a4a;--teal:#14506b;--mint:#2dd4a7;--gold:#f5b82e;--coral:#ff6b6b;--paper:#f4f8fb;--ink:#0f2a4a;--fh:"Fredoka","Trebuchet MS","Segoe UI",sans-serif;--fb:"Nunito","Trebuchet MS","Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow:hidden;font-family:var(--fb);color:var(--ink);
+ background:radial-gradient(circle at 12% 18%,#ffffff12 0 90px,transparent 91px),radial-gradient(circle at 88% 82%,#f5b82e22 0 130px,transparent 131px),linear-gradient(135deg,#0f2a4a 0%,#14506b 62%,#17806f 100%)}
+#app{height:100%;display:flex;flex-direction:column}
+button{border:0;border-radius:12px;padding:9px 16px;font:800 14px var(--fb);cursor:pointer;transition:transform .12s}
+button:hover{transform:translateY(-1px)}button:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button.g{background:linear-gradient(180deg,#58e8c0,var(--mint));color:#06352b;box-shadow:0 3px 0 #1a9d7c}
+button.o{background:linear-gradient(180deg,#ffd466,var(--gold));color:#4a3300;box-shadow:0 3px 0 #c48a0c}
+button.s{background:#ffffff1f;color:#fff;box-shadow:inset 0 0 0 2px #ffffff55}
+#top{display:flex;align-items:center;gap:10px;padding:8px 16px;flex-wrap:wrap;color:#fff}
+#logo{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe9a3,var(--gold) 60%,#c48a0c);display:grid;place-items:center;font:700 22px var(--fh);color:#5a3d00;box-shadow:0 3px 0 #9a6b00,0 0 0 4px #ffffff22}
+#ttl{font:700 clamp(18px,2.6vw,30px) var(--fh);flex:1;min-width:200px;line-height:1.05}
+#ttl small{display:block;font:600 clamp(11px,1.1vw,14px) var(--fb);color:#bfe9e0;margin-top:2px}
+.pill{background:#ffffff1f;border-radius:14px;padding:4px 14px;text-align:center;min-width:86px}
+.pill small{display:block;font-size:11px;font-weight:800;color:#bfe9e0}
+.pill b{font:700 clamp(16px,1.9vw,24px) var(--fh);color:var(--gold)}
+#mn{flex:1;min-height:0;display:flex;gap:14px;padding:6px 16px}
+#bw{flex:1;min-width:0;display:flex;align-items:center;justify-content:center}
+#board{display:grid;grid-template-columns:repeat(var(--N),var(--cs));grid-auto-rows:var(--cs);gap:2px;background:var(--navy);padding:8px;border-radius:18px;box-shadow:0 14px 40px #0008,0 0 0 4px #ffffff1c;font-size:calc(var(--cs)*.56);touch-action:none;user-select:none;-webkit-user-select:none;cursor:pointer}
+.c{display:grid;place-items:center;background:#fff;border-radius:calc(var(--cs)*.14);font:700 1em var(--fh);color:var(--ink);box-shadow:inset 0 -2px 0 #0f2a4a1f;transition:background .12s}
+.c.hint{box-shadow:inset 0 0 0 3px var(--gold)}
+.c.ok{background:#7ee2a8;color:#0a5c32}
+.c.sel{background:#ffe08a;box-shadow:0 0 0 2px var(--gold)}
+.c.bad{background:#ff8d8d;color:#7a1010}
+.c.wob{animation:wob .5s ease-in-out 6;position:relative;z-index:3}
+@keyframes wob{0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-12deg) translateY(-4px) scale(1.08)}75%{transform:rotate(12deg) translateY(-4px) scale(1.08)}}
+#pn{width:min(340px,32%);overflow:auto;background:var(--paper);border-radius:20px;padding:10px 12px 14px;box-shadow:0 14px 40px #0006;display:flex;flex-direction:column;gap:8px}
+#pn h3{font:700 clamp(14px,1.5vw,18px) var(--fh);color:var(--deep);display:flex;justify-content:space-between}
+#pn p{font-size:12px;font-weight:700;color:#4b6784;line-height:1.35}
+#wl{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#wl li{display:flex;justify-content:space-between;align-items:center;gap:4px;background:#fff;border-radius:10px;padding:6px 9px;font:700 clamp(11px,1.15vw,14px) var(--fb);letter-spacing:.3px;border-left:5px solid #cbd5e1}
+#wl li i{font:700 11px var(--fb);font-style:normal;color:#4b6784}
+#wl li.f{background:#e4f8ec;color:#1a6b43;border-left-color:#16a34a;text-decoration:line-through;text-decoration-color:#16a34a88}
+#wl li.f i{color:#16a34a}
+#foot{text-align:center;font-size:12px;font-weight:700;padding:5px;color:#d3eee8;letter-spacing:.3px}
+#md,#st{position:fixed;inset:0;background:#0b1b30cc;display:none;align-items:center;justify-content:center;z-index:20;padding:12px}
+#md.on,#st.on{display:flex}
+.card{background:var(--paper);border-radius:26px;padding:26px 32px;max-width:640px;max-height:90%;overflow:auto;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;box-shadow:0 0 0 6px var(--gold),0 20px 60px #000a;animation:pp .3s}
+@keyframes pp{from{transform:translateY(14px) scale(.96);opacity:0}}
+.card h2{font:700 clamp(26px,4.5vw,44px) var(--fh);color:#0f7a43;line-height:1.05}
+.card h2.k{color:#b86e00}
+.card .big{font:700 clamp(18px,2.6vw,26px) var(--fh);color:var(--deep)}
+.card p{font-weight:700;color:#334155}
+.card input{border:3px solid #cbd5e1;border-radius:12px;padding:10px 14px;font:700 18px var(--fb);text-align:center;outline:0;width:240px}
+.card input:focus{border-color:var(--gold)}.card input.shk{animation:shk .35s;border-color:var(--coral)}
+@keyframes shk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#pe{color:#c42626;font-weight:800;min-height:20px;font-size:14px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.card button.s2{background:#e2e8f0;color:#334155}
+.card ol{text-align:left;columns:2;column-gap:26px;font-size:14px;font-weight:700;padding:0;list-style:none;line-height:1.75}
+.card ol b{color:var(--teal)}.card ol small{color:#64748b;font-weight:600}
+#trophy{font-size:64px;cursor:pointer;background:none;padding:0;animation:bob 1.2s ease-in-out infinite;line-height:1}
+@keyframes bob{50%{transform:translateY(-8px) rotate(6deg)}}
+#cv{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+@media(max-width:760px){#mn{flex-direction:column}#pn{width:100%;max-height:34%}.card ol{columns:1}}
+</style></head><body>
+<div id="app">
+<div id="top"><div id="logo">🔎</div><div id="ttl">Word Search: Digital Money<small>Bahasa Inggris Kelas XII · Unit 2 — Geser huruf untuk menemukan kata</small></div>
+<div class="pill"><small>Poin</small><b id="pts">0</b></div><div class="pill"><small>Nilai</small><b id="nil">0</b></div><div class="pill"><small>Waktu</small><b id="tm">00:00</b></div>
+<button class="s" id="mus">🎵 Musik: On</button><button class="o" id="key">🔒 Kunci Jawaban</button><button class="s" id="rst">Ulangi</button></div>
+<div id="mn"><div id="bw"><div id="board"></div></div>
+<aside id="pn"><h3><span>Find these words</span><span id="cnt">0 / 20</span></h3><p>Kata bisa mendatar, menurun, atau diagonal. Tiap huruf bernilai 2 poin.</p><ul id="wl"></ul></aside></div>
+<div id="foot">Dibuat oleh: I Wayan Sudiana - SMAN 2 Bangli</div></div>
+<div id="st" class="on"><div class="card"><div style="font-size:54px">🔎🪙</div><h2 style="color:#14506b">Word Search<br>Digital Money</h2><p>Temukan 20 kata dari materi Unit 2 dengan menggeser huruf secara lurus.<br>Nilai maksimal 100.</p><button class="g" id="go" style="font-size:20px;padding:12px 30px">▶ Mulai Main</button></div></div>
+<div id="md"><div class="card" id="mb"></div></div><canvas id="cv"></canvas>
+<script>
+const $=s=>document.querySelector(s);
+/* Password kunci jawaban (ubah sesuai keinginan) */
+const PASS="bangli2026";
+/* GRID: 15 baris huruf. WORDS: a=kata, r/c=baris/kolom awal (mulai 0), dr/dc=arah (0,1 mendatar; 1,0 menurun; 1,1 diagonal turun; -1,1 diagonal naik) */
+const GRID=["AFIMBIOMETRICEU", "KOCASHLESSISKOO", "IICONCLUSIONOEP", "IMPULSIVELRGIVH", "RTRANSACTIONNII", "IMODCCWALLETEDS", "GEFIEHOADIERDEH", "NRRSSECUREAOFNI", "VCACONVENIENTCN", "EHUUACPAYMENTEG", "NADSOVBPRIVACYT", "DNGSTOPINIONOMB", "OTAIDCONTRASTOT", "REOOEOLITERACYD", "IEINFCAMPAIGNRI"];
+const WORDS=[{"a": "BIOMETRIC", "r": 0, "c": 4, "dr": 0, "dc": 1}, {"a": "CAMPAIGN", "r": 14, "c": 5, "dr": 0, "dc": 1}, {"a": "CASHLESS", "r": 1, "c": 2, "dr": 0, "dc": 1}, {"a": "CONCLUSION", "r": 2, "c": 2, "dr": 0, "dc": 1}, {"a": "CONTRAST", "r": 12, "c": 5, "dr": 0, "dc": 1}, {"a": "CONVENIENT", "r": 8, "c": 3, "dr": 0, "dc": 1}, {"a": "DISCUSSION", "r": 5, "c": 3, "dr": 1, "dc": 0}, {"a": "EVIDENCE", "r": 2, "c": 13, "dr": 1, "dc": 0}, {"a": "FRAUD", "r": 6, "c": 2, "dr": 1, "dc": 0}, {"a": "IMPULSIVE", "r": 3, "c": 0, "dr": 0, "dc": 1}, {"a": "LITERACY", "r": 13, "c": 6, "dr": 0, "dc": 1}, {"a": "MERCHANT", "r": 5, "c": 1, "dr": 1, "dc": 0}, {"a": "OPINION", "r": 11, "c": 5, "dr": 0, "dc": 1}, {"a": "PAYMENT", "r": 9, "c": 6, "dr": 0, "dc": 1}, {"a": "PHISHING", "r": 2, "c": 14, "dr": 1, "dc": 0}, {"a": "PRIVACY", "r": 10, "c": 7, "dr": 0, "dc": 1}, {"a": "SECURE", "r": 7, "c": 4, "dr": 0, "dc": 1}, {"a": "TRANSACTION", "r": 4, "c": 1, "dr": 0, "dc": 1}, {"a": "VENDOR", "r": 8, "c": 0, "dr": 1, "dc": 0}, {"a": "WALLET", "r": 5, "c": 6, "dr": 0, "dc": 1}];
+const N=GRID.length,MAXP=WORDS.reduce((s,w)=>s+w.a.length*2,0),DIRN={"0,1":"Mendatar →","1,0":"Menurun ↓","1,1":"Diagonal ↘","-1,1":"Diagonal ↗"};
+let el=[],drag=false,s0=null,cur=[],pts=0,found=0,started=false,done=false,secs=0,tmr=null,hintOn=false;
+
+/* ===== Bangun papan ===== */
+function build(){
+ const b=$("#board");b.innerHTML="";b.style.setProperty("--N",N);el=[];
+ for(let r=0;r<N;r++){el[r]=[];for(let c=0;c<N;c++){const d=document.createElement("div");d.className="c";d.textContent=GRID[r][c];b.appendChild(d);el[r][c]=d}}
+ WORDS.forEach(w=>{w.found=false;w.cells=[...Array(w.a.length)].map((_,i)=>[w.r+w.dr*i,w.c+w.dc*i])});
+ $("#wl").innerHTML=WORDS.map((w,i)=>`<li id="w${i}">${w.a}<i>+${w.a.length*2}</i></li>`).join("");
+ pts=0;found=0;done=false;secs=0;hintOn=false;ui();fit();
+}
+function fit(){const r=$("#bw").getBoundingClientRect();
+ const cs=Math.max(16,Math.floor(Math.min((r.width-16-(N-1)*2)/N,(r.height-16-(N-1)*2)/N,64)));$("#board").style.setProperty("--cs",cs+"px")}
+new ResizeObserver(fit).observe($("#bw"));
+function ui(){$("#pts").textContent=pts;$("#nil").textContent=Math.round(pts/MAXP*100);$("#cnt").textContent=found+" / "+WORDS.length;
+ const m=String(Math.floor(secs/60)).padStart(2,"0"),s=String(secs%60).padStart(2,"0");$("#tm").textContent=m+":"+s}
+
+/* ===== Seleksi (geser pointer, otomatis lurus 8 arah) ===== */
+function cellAt(e){const b=$("#board"),r=b.getBoundingClientRect(),cs=parseFloat(getComputedStyle(b).getPropertyValue("--cs"))+2;
+ const c=Math.floor((e.clientX-r.left-8)/cs),rw=Math.floor((e.clientY-r.top-8)/cs);return(c<0||rw<0||c>=N||rw>=N)?null:[rw,c]}
+function line(a,p){const dr=p[0]-a[0],dc=p[1]-a[1],ar=Math.abs(dr),ac=Math.abs(dc);let sr,sc,len;
+ if(ar===0&&ac===0)return[a];
+ if(ac>=2*ar){sr=0;sc=Math.sign(dc);len=ac}else if(ar>=2*ac){sc=0;sr=Math.sign(dr);len=ar}else{sr=Math.sign(dr);sc=Math.sign(dc);len=Math.max(ar,ac)}
+ while(len>0&&(a[0]+sr*len<0||a[0]+sr*len>=N||a[1]+sc*len<0||a[1]+sc*len>=N))len--;
+ return[...Array(len+1)].map((_,i)=>[a[0]+sr*i,a[1]+sc*i])}
+function setSel(l){cur.forEach(([r,c])=>el[r][c].classList.remove("sel"));cur=l;cur.forEach(([r,c])=>el[r][c].classList.add("sel"))}
+const B=$("#board");
+B.addEventListener("pointerdown",e=>{if(!started||done)return;const p=cellAt(e);if(!p)return;drag=true;s0=p;B.setPointerCapture(e.pointerId);setSel([p])});
+B.addEventListener("pointermove",e=>{if(!drag)return;const p=cellAt(e);if(p)setSel(line(s0,p))});
+["pointerup","pointercancel"].forEach(t=>B.addEventListener(t,()=>{if(!drag)return;drag=false;finish()}));
+function finish(){const L=cur;setSel([]);if(L.length<2)return;
+ const a=L[0],z=L[L.length-1];
+ const w=WORDS.find(w=>{const e=w.cells[w.cells.length-1],s=w.cells[0];return(s[0]===a[0]&&s[1]===a[1]&&e[0]===z[0]&&e[1]===z[1])||(s[0]===z[0]&&s[1]===z[1]&&e[0]===a[0]&&e[1]===a[1])});
+ if(w&&w.found)return;
+ if(w){w.found=true;found++;pts+=w.a.length*2;
+  w.cells.forEach(([r,c])=>{const d=el[r][c];d.classList.add("ok","wob");setTimeout(()=>d.classList.remove("wob"),3000)});
+  $("#w"+WORDS.indexOf(w)).classList.add("f");sndChime();ui();
+  if(found===WORDS.length)setTimeout(win,900)}
+ else{L.forEach(([r,c])=>el[r][c].classList.add("bad"));sndDong();setTimeout(()=>L.forEach(([r,c])=>el[r][c].classList.remove("bad")),800)}}
+
+/* ===== Menang ===== */
+function win(){done=true;clearInterval(tmr);sndWin();burst(160);setTimeout(()=>burst(120),700);setTimeout(()=>burst(120),1500);
+ const m=Math.floor(secs/60),s=secs%60;
+ modal(`<button id="trophy" title="Klik untuk konfeti">🏆</button><h2>🎉 Congratulations!</h2><p>Semua ${WORDS.length} kata berhasil ditemukan!</p><div class="big">Poin: ${pts} / ${MAXP}</div><div class="big">Nilai: ${Math.round(pts/MAXP*100)} / 100</div><p>Waktu: ${m} menit ${s} detik<br><small>Klik 🏆 untuk taburan konfeti lagi!</small></p><div class="row"><button class="g" id="again">Main Lagi</button><button class="s2" onclick="closeM()">Tutup</button></div>`);
+ $("#trophy").onclick=e=>{sndChime();burst(90,e.clientX,e.clientY)};$("#again").onclick=()=>{closeM();reset()}}
+function reset(){build();clearInterval(tmr);tmr=setInterval(()=>{secs++;ui()},1000)}
+
+/* ===== Modal & kunci jawaban ===== */
+function modal(h){$("#mb").innerHTML=h;$("#md").classList.add("on")}
+function closeM(){$("#md").classList.remove("on")}
+$("#key").onclick=()=>{modal(`<h2 class="k">🔒 Kunci Jawaban</h2><p>Masukkan password guru untuk membuka.</p><input id="pw" type="password" autocomplete="off" placeholder="Password"><div id="pe"></div><div class="row"><button class="o" id="pb">Buka</button><button class="s2" onclick="closeM()">Batal</button></div>`);
+ const pw=$("#pw"),go=()=>{if(pw.value===PASS)showKey();else{$("#pe").textContent="Password salah, coba lagi.";pw.value="";pw.classList.remove("shk");void pw.offsetWidth;pw.classList.add("shk");sndDong();pw.focus()}};
+ $("#pb").onclick=go;pw.onkeydown=e=>{if(e.key==="Enter")go();if(e.key==="Escape")closeM()};setTimeout(()=>pw.focus(),50)};
+function showKey(){modal(`<h2 class="k">Kunci Jawaban</h2><ol>${WORDS.map(w=>`<li><b>${w.a}</b><br><small>baris ${w.r+1}, kolom ${w.c+1} · ${DIRN[w.dr+","+w.dc]}</small></li>`).join("")}</ol><div class="row"><button class="o" id="hb">${hintOn?"Sembunyikan":"Sorot"} di Grid</button><button class="s2" onclick="closeM()">Tutup</button></div>`);
+ $("#hb").onclick=()=>{hintOn=!hintOn;WORDS.forEach(w=>w.cells.forEach(([r,c])=>el[r][c].classList.toggle("hint",hintOn)));closeM()}}
+$("#rst").onclick=()=>{if(started)reset()};
+
+/* ===== Audio (Web Audio API) ===== */
+let ac,sfx,mbus,musicOn=true,nextChord=0,ci=0,nextNote=0,mt=null;
+const CH=[[130.81,164.81,196,246.94],[110,130.81,164.81,196],[87.31,130.81,164.81,220],[98,146.83,196,246.94]],PENT=[523.25,587.33,659.25,783.99,880,1046.5];
+function audioInit(){if(ac)return;try{ac=new(window.AudioContext||window.webkitAudioContext)();sfx=ac.createGain();sfx.gain.value=.7;sfx.connect(ac.destination);mbus=ac.createGain();mbus.gain.value=.5;mbus.connect(ac.destination)}catch(_){}}
+function tone(f,t,d,type,v,bus){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+t;o.type=type;o.frequency.setValueAtTime(f,s);g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(v,s+.015);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g);g.connect(bus||sfx);o.start(s);o.stop(s+d+.05)}
+function sndChime(){[1318.5,1568,2093,2637].forEach((f,i)=>{tone(f,i*.09,1.3,"sine",.22);tone(f*2.01,i*.09,.7,"sine",.06)})}
+function sndDong(){tone(220,0,.7,"triangle",.4);tone(110,0,.7,"sine",.35);tone(165,.28,.9,"triangle",.4);tone(82.4,.28,.9,"sine",.35)}
+function sndWin(){[523.25,659.25,783.99,1046.5,1318.5,1568].forEach((f,i)=>{tone(f,i*.13,.9,"triangle",.25);tone(f*2,i*.13,.5,"sine",.07)})}
+/* Musik santai: pad akor lembut + melodi pentatonik acak */
+function pad(freqs,t,d){if(!ac)return;freqs.forEach(f=>{const o=ac.createOscillator(),g=ac.createGain(),fl=ac.createBiquadFilter(),s=ac.currentTime+t;fl.type="lowpass";fl.frequency.value=900;o.type="triangle";o.frequency.value=f;o.detune.value=(Math.random()-.5)*8;
+ g.gain.setValueAtTime(.0001,s);g.gain.linearRampToValueAtTime(.05,s+1.8);g.gain.linearRampToValueAtTime(.0001,s+d);o.connect(fl);fl.connect(g);g.connect(mbus);o.start(s);o.stop(s+d+.1)})}
+function tick(){if(!ac||!musicOn)return;const now=ac.currentTime;
+ if(nextChord<now+1){pad(CH[ci%4],Math.max(0,nextChord-now),6.5);ci++;nextChord=Math.max(nextChord,now)+6}
+ while(nextNote<now+1){if(Math.random()<.7)tone(PENT[Math.floor(Math.random()*PENT.length)],nextNote-now,2.2,"sine",.05,mbus);nextNote+=1.1+Math.random()*1.4}}
+function startMusic(){if(!ac)return;if(ac.state==="suspended")ac.resume();nextChord=nextNote=ac.currentTime+.1;clearInterval(mt);mt=setInterval(tick,400);tick()}
+$("#mus").onclick=()=>{musicOn=!musicOn;$("#mus").textContent="🎵 Musik: "+(musicOn?"On":"Off");if(mbus)mbus.gain.setTargetAtTime(musicOn?.5:0,ac.currentTime,.2);if(musicOn&&ac){nextChord=nextNote=ac.currentTime+.1}};
+
+/* ===== Konfeti ===== */
+const cv=$("#cv"),cx=cv.getContext("2d");let P=[],raf=0;
+function sz(){cv.width=innerWidth;cv.height=innerHeight}addEventListener("resize",sz);sz();
+function burst(n,x,y){const C=["#f5b82e","#2dd4a7","#ff6b6b","#5aa9ff","#ffffff","#c084fc"];
+ for(let i=0;i<n;i++){const fromTop=x===undefined,a=fromTop?Math.PI*(.15+Math.random()*.7):Math.random()*Math.PI*2,v=fromTop?4+Math.random()*7:3+Math.random()*10;
+  P.push({x:fromTop?Math.random()*cv.width:x,y:fromTop?-10:y,vx:fromTop?(Math.random()-.5)*6:Math.cos(a)*v,vy:fromTop?Math.sin(a)*v:Math.sin(a)*v-4,w:6+Math.random()*7,h:9+Math.random()*9,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:C[i%6],l:1})}
+ if(!raf)raf=requestAnimationFrame(loop)}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.y<cv.height+30);
+ P.forEach(p=>{p.vy+=.18;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r*2)));cx.restore()});
+ raf=P.length?requestAnimationFrame(loop):0;if(!P.length)cx.clearRect(0,0,cv.width,cv.height)}
+
+/* ===== Mulai ===== */
+$("#go").onclick=()=>{audioInit();startMusic();started=true;$("#st").classList.remove("on");reset()};
+build();
+</script></body></html>
